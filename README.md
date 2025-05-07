@@ -1,54 +1,78 @@
-# React + TypeScript + Vite
+# Internal Butchery - Inter-Butchery Ordering Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is an internal application allowing butcheries located in different places to order products from each other.
 
-Currently, two official plugins are available:
+### Technologies Used:
+- **Frontend**:
+    - React
+    - Vite
+    - Tailwind CSS
+    - ShadcnUI (CSS framework)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Backend**:
+    - Supabase (Database and Authentication)
 
-## Expanding the ESLint configuration
+### Prerequisites:
+Before you begin, make sure you have the following installed:
+- [Bun](https://bun.sh/) (Package manager and runtime)
+- Node.js (if Bun is not installed)
+- A Supabase account to create your database and configure authentication
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Installation
+
+### 1. Clone the Repository
+
+Clone the project to your local machine:
+
+```bash
+git clone <REPOSITORY-URL>
+cd <project-directory>
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Install Dependencies
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+With Bun, you can install all the dependencies by running the following command in your terminal
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+```bash
+bun install
 ```
+
+This command will download and install all the dependencies listed in the package.json.
+
+### 3. Set Up Environment Variables
+Create a .env file at the root of your project by copying the provided template.
+
+Example .env file:
+```env
+VITE_SUPABASE_URL=<your-supabase-url>
+VITE_SUPABASE_KEY=<your-url_key>
+```
+
+### 4. Start the Application in Development Mode
+   
+Once the dependencies are installed and the .env file is configured, you can start the application with the following command:
+
+```bash
+bun run dev
+```
+
+### 5. Access Supabase Database
+To manage your Supabase database, you can go to Supabase, log in with your account, and create a new database instance.
+Details are going to be provided soon.
+
+### 6. Deployment
+
+I use Vercel for deployment. You can deploy the application by following these steps:
+1. Create a new project in Vercel.
+2. Connect your GitHub repository to Vercel.
+3. Set up environment variables in Vercel with the same keys as in your .env file.
+
+## Main Features
+- Product Management: Butcheries can add, edit, and delete commands.
+- User Management: Authentication via Supabase, with each butcher having their own account.
+
+## Authors
+Jordy Bacherot - Lead Developer 
+
