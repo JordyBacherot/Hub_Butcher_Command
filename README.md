@@ -1,4 +1,4 @@
-# Internal Butchery - Inter-Butchery Ordering Platform
+# Hub_Butcher_Command - Inter-Butchery Ordering Platform
 
 This project is an internal application allowing butcheries located in different places to order products from each other.
 
@@ -75,4 +75,7 @@ I use Vercel for deployment. You can deploy the application by following these s
 
 ## Authors
 Jordy Bacherot - Lead Developer 
+
+### Note 
+Project built in pair programming with ChatGPT
 
