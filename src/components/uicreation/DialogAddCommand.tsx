@@ -15,25 +15,22 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-
+import { Command } from "@/types/command.ts";
+import {
+    Select, SelectTrigger, SelectValue, SelectContent, SelectItem
+} from "@/components/ui/select";
 type CommandDialogProps = {
     village: string;
 };
 
-type Command = {
-    product_name: string;
-    description: string;
-    quantity: string;
-    butcher_shop_sender: string;
-    butcher_shop_receiver: string;
-    date: Date;
-};
 
-export default function CommandDialog({ village }: CommandDialogProps) {
+export default function DialogAddCommand({ village }: CommandDialogProps) {
     const [productName, setProductName] = useState("");
     const [quantity, setQuantity] = useState("");
     const [description, setDescription] = useState("");
     const [date, setDate] = useState<Date>()
+    const [butcherShopSender, setButcherShopSender] = useState(village);
+    const [butcherShopReceiver, setButcherShopReceiver] = useState(village === "mercurey" ? "saint-remy" : "mercurey");
     const [openAlert, setOpenAlert] = useState(false);
     const [openDialog, setOpenDialog] = useState(false); // Pour contrôler l'ouverture/fermeture du Dialog
 
@@ -53,9 +50,9 @@ export default function CommandDialog({ village }: CommandDialogProps) {
             product_name: productName,
             description,
             quantity,
-            butcher_shop_sender: village,
-            butcher_shop_receiver: village === "mercurey" ? "saint-remy" : "mercurey",
-            date: date ? date : new Date(),
+            butcher_shop_sender: butcherShopSender,
+            butcher_shop_receiver: butcherShopReceiver,
+            command_date: date ? date : new Date(),
         };
 
         await handleAddCommand(command);
@@ -146,6 +143,43 @@ export default function CommandDialog({ village }: CommandDialogProps) {
                                     />
                                 </PopoverContent>
                             </Popover>
+                        </div>
+                        <div className="space-y-4 flex flex-col sm:flex-row justify-between">
+                            <div>
+                                <Label className="text-gray-500 font-medium pb-2">🔽 Demandeur de la commande</Label>
+                                <Select value={butcherShopSender} onValueChange={(value) => {
+                                    setButcherShopSender(value);
+                                    // Pour éviter que sender et receiver soient égaux
+                                    if (value === butcherShopReceiver) {
+                                        setButcherShopReceiver(value === "mercurey" ? "saint-remy" : "mercurey");
+                                    }
+                                }}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue placeholder="Choisir" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="mercurey">mercurey</SelectItem>
+                                        <SelectItem value="saint-remy">saint-remy</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div>
+                                <Label className="text-gray-500 font-medium pb-2">🔼 Créateur de la commande</Label>
+                                <Select value={butcherShopReceiver} onValueChange={(value) => {
+                                    setButcherShopReceiver(value);
+                                    if (value === butcherShopSender) {
+                                        setButcherShopSender(value === "mercurey" ? "saint-remy" : "mercurey");
+                                    }
+                                }}>
+                                    <SelectTrigger className="w-40">
+                                        <SelectValue placeholder="Choisir" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="mercurey">mercurey</SelectItem>
+                                        <SelectItem value="saint-remy">saint-remy</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
                         </div>
                         <Button className="flex w-30 h-10 ml-auto" onClick={submitForm}>
                             Envoyer

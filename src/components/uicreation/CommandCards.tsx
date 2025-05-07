@@ -13,20 +13,9 @@ import {
 import { updateCommandStatus } from "@/services/serviceSupabase";
 import {Badge} from "@/components/ui/badge";
 import {toast} from "sonner";
-
-
-
-type Command = {
-    id: number;
-    product_name: string;
-    description: string;
-    quantity: string;
-    butcher_shop_sender: string;
-    butcher_shop_receiver: string;
-    date: Date;
-    command_date: string;
-    status: string;
-};
+import { Command } from "@/types/command.ts";
+import {Button} from "@/components/ui/button";
+import DialogModifyCommand from "@/components/uicreation/DialogModifyCommand.tsx";
 
 type CommandCardsProps = {
     filters: boolean[];
@@ -39,6 +28,8 @@ export default function CommandCards({ filters, receive_send, village }: Command
     const [selectedCommand, setSelectedCommand] = useState<Command | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [openModify, setOpenModify] = useState(false);
+
 
 
     useEffect(() => {
@@ -128,7 +119,7 @@ export default function CommandCards({ filters, receive_send, village }: Command
                             <div className="flex justify-between items-start">
                                 <h3 className="text-xl font-bold">{command.product_name}</h3>
                                 <Badge className="text-sm font-medium h-8">
-                                    {formatDateFr(command.command_date)}
+                                    {formatDateFr(command.command_date.toString()!)}
                                 </Badge>
                             </div>
 
@@ -150,7 +141,7 @@ export default function CommandCards({ filters, receive_send, village }: Command
                                     command.status === "en livraison" && "text-blue-700",
                                     command.status === "validée" && "text-green-700"
                                 )}>
-                                  {getStatusEmoji(command.status)} {command.status}
+                                  {getStatusEmoji(command.status!)} {command.status}
                                 </span>
                             </div>
                         </CardContent>
@@ -171,7 +162,7 @@ export default function CommandCards({ filters, receive_send, village }: Command
                             <div className="flex justify-between items-start">
                                 <h3 className="text-lg font-semibold">{selectedCommand.product_name}</h3>
                                 <Badge className=" text-sm font-medium h-10">
-                                    📅 {formatDateFr(selectedCommand.command_date)}
+                                    📅 {formatDateFr(selectedCommand.command_date.toString()!)}
                                 </Badge>
                             </div>
 
@@ -188,11 +179,11 @@ export default function CommandCards({ filters, receive_send, village }: Command
                             {/* Expéditeur et Destinataire */}
                             <div className="grid grid-cols-2 gap-4 pt-2">
                                 <div>
-                                    <p className="font-medium text-gray-500">🔽 Destinataire :</p>
+                                    <p className="font-medium text-gray-500">🔽 Demandeur de la commande :</p>
                                     <p>{selectedCommand.butcher_shop_receiver}</p>
                                 </div>
                                 <div>
-                                    <p className="font-medium text-gray-500">🔼 Expéditeur :</p>
+                                    <p className="font-medium text-gray-500">🔼 Créateur de la commande :</p>
                                     <p>{selectedCommand.butcher_shop_sender}</p>
                                 </div>
                             </div>
@@ -204,7 +195,7 @@ export default function CommandCards({ filters, receive_send, village }: Command
                                     value={selectedCommand.status}
                                     onValueChange={async (newStatus) => {
                                         try {
-                                            await updateCommandStatus(selectedCommand.id, newStatus);
+                                            await updateCommandStatus(selectedCommand.id!, newStatus);
                                             setCommands((prev) =>
                                                 prev.map((cmd) =>
                                                     cmd.id === selectedCommand.id ? { ...cmd, status: newStatus } : cmd
@@ -229,8 +220,27 @@ export default function CommandCards({ filters, receive_send, village }: Command
                             </div>
                         </div>
                     )}
+                    <Button onClick={() => setOpenModify(true)}>
+                        Modifier cette commande
+                    </Button>
                 </DialogContent>
             </Dialog>
+            <DialogModifyCommand
+                open={openModify}
+                onOpenChange={(open) => {
+                    setOpenModify(open);
+                    if (!open) {
+                        setSelectedCommand(null);
+                    }
+                }}
+                command={selectedCommand}
+                onSave={async () => {
+                    const refreshed = await getCommands({ filters, receive_send, village });
+                    setCommands(refreshed);
+                    setOpenModify(false);
+                    setSelectedCommand(null);
+                }}
+            />
         </>
     );
 }
